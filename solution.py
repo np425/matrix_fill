@@ -87,7 +87,7 @@ def visualise_solution(grid, rotations, shape_offsets, solution, colors):
             if val:
                 sliced[coord] = shape_idx + 1
 
-    display_array(result_grid, transform_f=lambda x: colored(str(x) if x != 0 else ' ', color=colors[x-1]))
+    display_array(result_grid, transform_f=lambda x: colored(chr(ord('A') + x-1) if x != 0 else ' ', color=colors[(x-1) % len(colors)]))
 
 
 def solve(grid, shapes, shape_offsets):
@@ -128,8 +128,18 @@ def solve_and_display(grid, shapes, colors):
 
     shape_offsets = [first_spot(shape, 0, 1) for shape in rotations]
 
+    # visualise used shapes
+    for idx, shape in enumerate(rotations):
+        # for visuals
+        print(colored(f'Shape {chr(ord("A") + idx)}', color=colors[idx % len(colors)]))
+        display_array(shape, lambda x: str(x) if x != 0 else ' ')
+        print()
+
     t_start = time.time()
     sol_n = 0
+
+    print(colored('Grid', 'green'))
+    display_array(grid, lambda x: str(x) if x != 1 else ' ')
 
     # find solutions
     for sol in solve(grid.copy(), rotations, shape_offsets):
@@ -147,7 +157,7 @@ def solve_and_display(grid, shapes, colors):
     # visualise used shapes
     for idx, shape in enumerate(rotations):
         # for visuals
-        print(colored(f'Shape {idx + 1}', color=colors[idx]))
+        print(colored(f'Shape {chr(ord("A") + idx)}', color=colors[idx % len(colors)]))
         display_array(shape, lambda x: str(x) if x != 0 else ' ')
         print()
 
@@ -196,7 +206,7 @@ def main():
     while True:
         shape = read_np_array(
             colored(f'Enter shape {shape_idx + 1} (0 for space, 1 for occupying space, empty line to finish)',
-                    color=colors[shape_idx]), padding=0)
+                    color=colors[shape_idx % len(colors)]), padding=0)
         if shape.size == 0:
             break
 
